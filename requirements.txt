@@ -4,5 +4,15 @@
 #
 #    pip-compile
 #
+colorama==0.4.4
+    # via loguru
+greenlet==1.1.2
+    # via sqlalchemy
+loguru==0.5.3
+    # via -r requirements.in
 networkx==2.6.3
     # via -r requirements.in
+sqlalchemy==1.4.28
+    # via -r requirements.in
+win32-setctime==1.0.4
+    # via loguru
