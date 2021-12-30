@@ -2,241 +2,123 @@ from typing import List, Dict, Optional
 
 import sqlparse
 
+from lib.sql_parser.table import Table
+
+
+def parse_query(query: str) -> List[Table]:
+    tables = __visit(token=sqlparse.parse(query)[0])
+    tables_list: List[Table] = []
+    for table_str in tables.keys():
+        if tables[table_str] not in tables_list:
+            tables[table_str].block_table()
+            tables_list.append(tables[table_str])
+    return tables_list
+
+
+def __visit(token, config_dict: Optional[Dict] = None, tables: Optional[Dict[str, Table]] = None) -> Dict[str, Table]:
+    if config_dict is None:
+        config_dict = {"query_type": None}
+    if tables is None:
+        tables = {}
+
+    value = token.value  # TODO Remove
+
+    if (config_dict["query_type"] == "select" and token.ttype == sqlparse.tokens.Punctuation and str(
+            token.value).lower().strip() == ",") or token.is_keyword and \
+            str(token.value).lower().strip() == "from":
+        if "column_name" in config_dict:
+            table_name = "" if len(str(config_dict["column_name"]).split(".")) < 2 else str(
+                config_dict["column_name"]).split(".")[0]
+            if table_name not in tables:
+                tables[table_name] = Table(alias=table_name)
+            table = tables[table_name]
+            if str(config_dict["column_name"]) not in table.columns:
+                alias = str(config_dict["column_alias"]) if "column_alias" in config_dict else None
+                column_name = str(config_dict["column_name"])[0] if len(
+                    str(config_dict["column_name"]).split(".")) < 2 else str(
+                    config_dict["column_name"]).split(".")[1]
+                table.add_column(column=column_name, alias=alias)
+            if "function_value" in config_dict:
+                table.add_function(str(config_dict["function_value"]))
+        config_dict.pop("is_function", None)
+        config_dict.pop("column_name", None)
+        config_dict.pop("is_parenthesis", None)
+        config_dict.pop("is_function", None)
+        config_dict.pop("column_has_alias", None)
+        config_dict.pop("function_value", None)
+        config_dict.pop("column_alias", None)
+
+    elif config_dict["query_type"] == "from" and token.ttype == sqlparse.tokens.Punctuation and str(
+            token.value).lower().strip() in [",", ";"] or token.is_keyword and \
+            str(token.value).lower().strip() == "where":
+        table_alias = str(config_dict["table_alias"]) if "table_alias" in config_dict else None
+        if "table_name" in config_dict:
+            table_name = config_dict["table_name"]
+            table = None
+            if table_name in tables:
+                table = tables[table_name]
+            elif table_alias is not None and table_alias in tables:
+                table = tables[table_alias]
+            if table is None:
+                table = Table(alias=table_name)
+            table.name = table_name
+            if table_alias is not None:
+                table.alias = table_alias
+            tables.pop(table_alias, None)
+            tables.pop(table_name, None)
+            tables[table_name] = table
+        config_dict.pop("table_alias", None)
+        config_dict.pop("table_name", None)
+
+    if token.is_keyword and str(token.value).lower().strip() == "select":
+        config_dict["query_type"] = "select"
+    elif token.is_keyword and str(token.value).lower().strip() == "from":
+        config_dict["query_type"] = "from"
+
+    if config_dict["query_type"] == "select" and not token.is_whitespace:
+        __parse_select_query(token, config_dict)
+
+    if config_dict["query_type"] == "from" and not token.is_whitespace:
+        __parse_from_query(token, config_dict)
+
+    if token.is_group:
+        for child in token.tokens:
+            __visit(child, config_dict=config_dict, tables=tables)
+
+    return tables
+
+
+def __parse_select_query(token, config_dict):
+    column_has_alias: Optional[bool] = None
+    if token.is_keyword and str(token.value).lower().strip() == "as":
+        column_has_alias = True
+
+    if isinstance(token, sqlparse.sql.Function):
+        config_dict["is_function"] = True
+        config_dict["function_value"] = token.value
+
+    elif isinstance(token, sqlparse.sql.Parenthesis):
+        config_dict["is_parenthesis"] = True
+
+    if isinstance(token, sqlparse.sql.Identifier):
+        if ("is_function" not in config_dict or (
+                "is_function" in config_dict and "is_parenthesis" in config_dict)) and (
+                "column_has_alias" not in config_dict or "column_has_alias" in config_dict and
+                not config_dict["column_has_alias"]):
+            config_dict["column_name"] = str(token.value)
 
-class SqlParser:
-    def __init__(self) -> None:
-        self.__query = ""
-        self.__functions: List = []
-        self.__columns: Dict = {}
-        self.__tables: Dict = {}
-
-        # TODO Remove following variables
-        self.NameAliasMixin = []
-        self.Token = []
-        self.TokenList = []
-        self.Statement = []
-        self.Identifier = []
-        self.IdentifierList = []
-        self.TypedLiteral = []
-        self.Parenthesis = []
-        self.SquareBrackets = []
-        self.Assignment = []
-        self.If = []
-        self.For = []
-        self.Comparison = []
-        self.Comment = []
-        self.Where = []
-        self.Having = []
-        self.Case = []
-        self.Function = []
-        self.Begin = []
-        self.Operation = []
-        self.Values = []
-        self.Command = []
-        self.Keyword = []
-
-    @property
-    def query(self) -> str:
-        return self.__query
-
-    @query.setter
-    def query(self, query: str) -> None:
-        self.__query = query
-        self.__visit(sqlparse.parse(self.__query)[0])
-
-    @property
-    def functions(self) -> List:
-        return self.__functions.copy()
-
-    @property
-    def columns(self) -> Dict:
-        return self.__columns.copy()
-
-    @property
-    def tables(self) -> Dict:
-        return self.__tables.copy()
-
-    def __visit(self, token, config_dict: Optional[Dict] = None) -> None:
-        if config_dict is None:
-            config_dict = {"select_query": False}
-
-        value = token.value  # TODO Remove
-
-        if token.is_keyword and str(token.value).lower().strip() == "select":
-            config_dict["select_query"] = True
-        elif token.is_keyword and str(token.value).lower().strip() == "from":
-            config_dict["select_query"] = False
-
-        if config_dict["select_query"] and not token.is_whitespace:
-            if token.is_keyword and str(token.value).lower().strip() == "as":
-                config_dict["column_has_alias"] = True
-
-            if isinstance(token, sqlparse.sql.Function):
-                self.__functions += [token.value]
-                config_dict["is_function"] = True
-
-            elif isinstance(token, sqlparse.sql.Parenthesis):
-                config_dict["is_parenthesis"] = True
-
-            if isinstance(token, sqlparse.sql.Identifier):
-                if ("is_function" not in config_dict or (
-                        "is_function" in config_dict and "is_parenthesis" in config_dict)) and (
-                        "column_has_alias" not in config_dict or "column_has_alias" in config_dict and
-                        not config_dict["column_has_alias"]):
-                    config_dict["column_name"] = str(token.value)
-
-            elif "column_has_alias" in config_dict and "column_name" in config_dict and config_dict["column_has_alias"]:
-                self.__columns[str(config_dict["column_name"])] = str(token.value)
-
-            if token.ttype == sqlparse.tokens.Punctuation and str(token.value).lower().strip() == ",":
-                if "column_name" in config_dict and str(config_dict["column_name"]) not in self.__columns:
-                    self.__columns[str(config_dict["column_name"])] = str(config_dict["column_name"])
-                config_dict.pop("is_function", None)
-                config_dict.pop("column_name", None)
-                config_dict.pop("is_parenthesis", None)
-                config_dict.pop("is_function", None)
-                config_dict.pop("column_has_alias", None)
-
-        if token.is_group:
-            for child in token.tokens:
-                self.__visit(child, config_dict)
-
-        return None
-
-    def test(self, token, count=0) -> int:  # TODO Remove
-        is_group = token.is_group
-        is_keyword = token.is_keyword
-        is_whitespace = token.is_whitespace
-        normalized = token.normalized
-        ttype = token.ttype
-        if not token.is_whitespace:
-            print(f"{is_group=}")
-            print(f"{is_keyword=}")
-            print(f"{is_whitespace=}")
-            print(f"{normalized=}")
-            print(f"{ttype=}")
-            print(f"value={token.value}")
-            print(f"is_function={isinstance(token, sqlparse.sql.Function)}")
-            print("\n\n")
+    elif "column_has_alias" in config_dict and "column_name" in config_dict and config_dict["column_has_alias"]:
+        config_dict["column_alias"] = str(token.value)
 
-        if token.is_keyword:
-            self.Keyword += [(token.value, count)]
+    if column_has_alias is not None:
+        config_dict["column_has_alias"] = column_has_alias
 
-        if isinstance(token, sqlparse.sql.NameAliasMixin):
-            self.NameAliasMixin += [(token.value, count)]
 
-        if isinstance(token, sqlparse.sql.Token):
-            self.Token += [(token.value, count)]
+def __parse_from_query(token, config_dict):
+    if token.is_keyword or token.is_whitespace or token.is_group:
+        return
 
-        if isinstance(token, sqlparse.sql.TokenList):
-            self.TokenList += [(token.value, count)]
-
-        if isinstance(token, sqlparse.sql.Statement):
-            self.Statement += [(token.value, count)]
-
-        if isinstance(token, sqlparse.sql.Identifier):
-            self.Identifier += [(token.value, count)]
-
-        if isinstance(token, sqlparse.sql.IdentifierList):
-            self.IdentifierList += [(token.value, count)]
-
-        if isinstance(token, sqlparse.sql.TypedLiteral):
-            self.TypedLiteral += [(token.value, count)]
-
-        if isinstance(token, sqlparse.sql.Parenthesis):
-            self.Parenthesis += [(token.value, count)]
-
-        if isinstance(token, sqlparse.sql.SquareBrackets):
-            self.SquareBrackets += [(token.value, count)]
-
-        if isinstance(token, sqlparse.sql.Assignment):
-            self.Assignment += [(token.value, count)]
-
-        if isinstance(token, sqlparse.sql.If):
-            self.If += [(token.value, count)]
-
-        if isinstance(token, sqlparse.sql.For):
-            self.For += [(token.value, count)]
-
-        if isinstance(token, sqlparse.sql.Comparison):
-            self.Comparison += [(token.value, count)]
-
-        if isinstance(token, sqlparse.sql.Comment):
-            self.Comment += [(token.value, count)]
-
-        if isinstance(token, sqlparse.sql.Where):
-            self.Where += [(token.value, count)]
-
-        if isinstance(token, sqlparse.sql.Having):
-            self.Having += [(token.value, count)]
-
-        if isinstance(token, sqlparse.sql.Case):
-            self.Case += [(token.value, count)]
-
-        if isinstance(token, sqlparse.sql.Function):
-            self.Function += [(token.value, count)]
-
-        if isinstance(token, sqlparse.sql.Begin):
-            self.Begin += [(token.value, count)]
-
-        if isinstance(token, sqlparse.sql.Operation):
-            self.Operation += [(token.value, count)]
-
-        if isinstance(token, sqlparse.sql.Values):
-            self.Values += [(token.value, count)]
-
-        if isinstance(token, sqlparse.sql.Command):
-            self.Command += [(token.value, count)]
-
-        if token.is_group:
-            for child in token.tokens:
-                count = self.test(child, count + 1)
-
-        return count
-
-    def print(self):  # TODO Remove
-        print(f"NameAliasMixin={self.NameAliasMixin}")
-
-        print(f"Token={self.Token}")
-
-        print(f"TokenList={self.TokenList}")
-
-        print(f"Statement={self.Statement}")
-
-        print(f"Identifier={self.Identifier}")
-
-        print(f"IdentifierList={self.IdentifierList}")
-
-        print(f"TypedLiteral={self.TypedLiteral}")
-
-        print(f"Parenthesis={self.Parenthesis}")
-
-        print(f"SquareBrackets={self.SquareBrackets}")
-
-        print(f"Assignment={self.Assignment}")
-
-        print(f"If={self.If}")
-
-        print(f"For={self.For}")
-
-        print(f"Comparison={self.Comparison}")
-
-        print(f"Comment={self.Comment}")
-
-        print(f"Where={self.Where}")
-
-        print(f"Having={self.Having}")
-
-        print(f"Case={self.Case}")
-
-        print(f"Function={self.Function}")
-
-        print(f"Begin={self.Begin}")
-
-        print(f"Operation={self.Operation}")
-
-        print(f"Values={self.Values}")
-
-        print(f"Command={self.Command}")
-
-        print(f"Keyword={self.Keyword}")
+    if "table_name" not in config_dict:
+        config_dict["table_name"] = str(token.value)
+    else:
+        config_dict["table_alias"] = str(token.value)
