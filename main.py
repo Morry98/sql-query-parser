@@ -53,14 +53,15 @@ logger.info(db_path)
 
 
 query1 = sql_parser.parse_query("""SELECT v.story_id, COUNT(v.pippo) AS aa
-     FROM votes as v;
+     FROM votes as v
+     where v.story_id = :story_id and (v.date > :date or v.role = :role);
      """)
 
-query2 = sql_parser.parse_query("""
-SELECT stories.id, stories.author, stories.title, stories.url, stories.vcount
-     FROM stories
-     JOIN VoteCount ON VoteCount.story_id = stories.id
-     WHERE stories.id = ?;""")
+#query2 = sql_parser.parse_query("""
+#SELECT stories.id, stories.author, stories.title, stories.url, stories.vcount
+#     FROM stories
+#     JOIN VoteCount ON VoteCount.story_id = stories.id
+#     WHERE stories.id = ?;""")
 
 print(query1)
-print(query2)
+#print(query2)
