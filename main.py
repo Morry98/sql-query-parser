@@ -52,9 +52,15 @@ logger.info(db_path)
 # print(f"{sql_parser_test.columns=}")
 
 
-tables = sql_parser.parse_query("""SELECT v.story_id, COUNT(v.pippo) AS aa
+query1 = sql_parser.parse_query("""SELECT v.story_id, COUNT(v.pippo) AS aa
      FROM votes as v;
      """)
 
-for table in tables:
-    print(table)
+query2 = sql_parser.parse_query("""
+SELECT stories.id, stories.author, stories.title, stories.url, stories.vcount
+     FROM stories
+     JOIN VoteCount ON VoteCount.story_id = stories.id
+     WHERE stories.id = ?;""")
+
+print(query1)
+print(query2)
