@@ -176,7 +176,7 @@ def __add_conditions_in_query(config_dict, query):
     query_condition_len = len(query.condition)
     if query_condition_len < index:
         for i in range(index - query_condition_len):
-            query.add_condition(Condition(config_dict["condition_type"][query_condition_len + i]))
+            query.add_condition(Condition(config_dict["condition_type"][query_condition_len + i][-1]))
     condition_type = config_dict["condition_type"].pop(-1)  # TODO Use for checks and sub condition creation
     conditions = config_dict["condition"].pop(-1)
     condition = query.condition
