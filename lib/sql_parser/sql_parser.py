@@ -36,13 +36,13 @@ def __visit(token, query: Query, config_dict: Optional[Dict] = None) -> None:
                 table = Table(alias=table_name)
                 query.add_table(table)
             alias = str(config_dict["column_alias"]) if "column_alias" in config_dict else None
-            if str(config_dict["column_name"]) not in table.columns:
+            if "function_value" in config_dict:
+                table.add_function(function=str(config_dict["function_value"]), alias=alias)
+            elif str(config_dict["column_name"]) not in table.columns:
                 column_name = str(config_dict["column_name"])[0] if len(
                     str(config_dict["column_name"]).split(".")) < 2 else str(
                     config_dict["column_name"]).split(".")[1]
                 table.add_column(column=column_name, alias=alias)
-            if "function_value" in config_dict:
-                table.add_function(function=str(config_dict["function_value"]), alias=alias)
         config_dict.pop("is_function", None)
         config_dict.pop("column_name", None)
         config_dict.pop("is_parenthesis", None)
