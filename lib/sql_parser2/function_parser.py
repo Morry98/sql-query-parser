@@ -1,10 +1,10 @@
-import inspect
-from typing import Optional, Dict, Tuple
+from typing import Tuple
 
 from lib.sql_parser2 import functions
+from lib.sql_parser2.configurations import Configurations
 
 
-def compute(word: str, config: Optional[Dict] = None) -> Tuple[bool, Dict]:
+def compute(word: str, config: Configurations) -> Tuple[bool, Configurations]:
     if type(word) is not str:
         raise Exception('word must be a string!')
     basic_word: str = word.strip().lower()

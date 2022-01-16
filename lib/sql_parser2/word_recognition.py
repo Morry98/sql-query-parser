@@ -1,18 +1,15 @@
-from typing import Optional, Dict
+from typing import Tuple
 
-from lib.sql_parser2 import function_parser
+from lib.sql_parser2 import function_parser, keyword_parser
+from lib.sql_parser2.configurations import Configurations
 
 
-def compute(word: str, config: Optional[Dict] = None):  # TODO Config probably will be a specific class
+def compute(word: str, config: Configurations) -> Tuple[bool, Configurations]:
     if type(word) is not str:
         raise Exception('word must be a string!')
-    for class_ in [function_parser]:
+    for class_ in [keyword_parser, function_parser]:
         result, config = class_.compute(word=word.strip().lower(), config=config)
         if result is True:
             print(f"Matched {word}")
-            return True
-    raise Exception(f'{word} Statement not implemented')
-
-
-if __name__ == '__main__':  # TODO Remove this, it will be called by other functions to be created
-    compute("count(table.col)")
+            return True, config
+    return False, config
