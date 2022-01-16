@@ -4,7 +4,8 @@ from lib.engine import Engine
 from loguru import logger
 
 from lib.sql_parser.sql_parser_test import SqlParserTest
-from lib.sql_parser import sql_parser
+from lib.sql_parser import sql_parser as old_sql_parser
+from lib.sql_parser2 import sql_parser
 
 db_path = "sqlite:///D:\\PersonalProject\\ciuf\\test.db"
 logger.info(db_path)
@@ -52,7 +53,11 @@ logger.info(db_path)
 # print(f"{sql_parser_test.columns=}")
 
 
-query1 = sql_parser.parse_query("""SELECT v.story_id, COUNT(v.pippo) AS aa
+query1 = sql_parser.parse_query("""SELECT COUNT(v.star) AS aa, v.story_id
+     FROM votes as v
+     where v.story_id = :story_id and (v.date > :date or v.role = :role);
+     """)
+query1_old = old_sql_parser.parse_query("""SELECT COUNT(v.star) AS vote, v.story_id
      FROM votes as v
      where v.story_id = :story_id and (v.date > :date or v.role = :role);
      """)
