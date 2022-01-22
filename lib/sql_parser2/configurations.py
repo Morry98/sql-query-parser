@@ -10,7 +10,7 @@ class Configurations:
 
     def __init__(self, query: Query) -> None:
         self.__keyword: List[str] = []
-        self.__parsing_column: List[Tuple[str, str]] = []
+        self.__parsing_column: List[Tuple[str, Optional[str]]] = []  # [(column, alias)]
         self.__query = query
 
     @property
@@ -22,7 +22,7 @@ class Configurations:
         return self.__query
 
     @property
-    def parsing_column(self) -> List[Tuple[str, str]]:
+    def parsing_column(self) -> List[Tuple[str, Optional[str]]]:
         return self.__parsing_column.copy()
 
     @keywords.setter
@@ -37,10 +37,10 @@ class Configurations:
             raise Exception("No Keyword to pop")
         return self.__keyword.pop(-1)
 
-    def add_parsing_column(self, parsing_column: tuple[str, str]):
+    def add_parsing_column(self, parsing_column: Tuple[str, Optional[str]]):
         self.__parsing_column.append(parsing_column)
 
-    def pop_last_parsing_column(self) -> tuple[str, str]:
+    def pop_last_parsing_column(self) -> Tuple[str, Optional[str]]:
         if len(self.__parsing_column) == 0 or self.__parsing_column is None:
             raise Exception("No parsing_column to pop")
         return self.__parsing_column.pop(-1)
