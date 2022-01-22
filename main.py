@@ -53,9 +53,14 @@ logger.info(db_path)
 # print(f"{sql_parser_test.columns=}")
 
 
-query1 = sql_parser.parse_query("""SELECT COUNT(v.star) AS aa, v.story_id
-     FROM votes as v
-     where v.story_id = :story_id and (v.date > :date or v.role = :role);
+query1 = sql_parser.parse_query("""SELECT
+    COUNT(v.star) AS aa,
+    COUNT(t1.b),
+    v.story_id,
+    t1.test as tt,
+    v.test1
+    FROM votes as v
+    where v.story_id = :story_id and (v.date > :date or v.role = :role);
      """)
 query1_old = old_sql_parser.parse_query("""SELECT COUNT(v.star) AS vote, v.story_id
      FROM votes as v
