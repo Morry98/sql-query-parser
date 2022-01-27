@@ -14,7 +14,7 @@ def parse_query(query_str: str) -> Query:
         if word == '':
             continue
         # TODO REMOVE
-        if word == 'FROM':
+        if word.lower().strip() == 'where':
             break
         result, config = word_recognition.compute(word=word, config=config)
         if not result:
