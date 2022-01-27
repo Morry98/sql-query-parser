@@ -14,6 +14,10 @@ def compute(word: str, config: Configurations) -> Tuple[bool, Configurations]:
         if "as" in word:
             config.add_keyword("as")
             return True, config
+        if "from" in word:  # TODO Can be found a better solution
+            config.pop_last_keyword()
+            config.pop_last_parsing_value()
+            return False, config
     elif len(config.keywords) > 1 and config.keywords[-2] == "function_count":
         if config.keywords[-1] == "as":
             if len(config.parsing_value) != 1:
