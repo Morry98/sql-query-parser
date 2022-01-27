@@ -32,6 +32,7 @@ def __parse_select_columns(word: str, config: Configurations) -> Tuple[bool, Con
                 add_column_to_query(config=config, alias=word)
                 config.pop_last_keyword()
             elif "," in word:
+                word = word[:-1]
                 config.add_parsing_value(parsing_value=(word, None))
                 add_column_to_query(config=config)
                 config.pop_last_parsing_value()
@@ -52,6 +53,7 @@ def __parse_from_tables(word: str, config: Configurations) -> Tuple[bool, Config
                 add_table_to_query(config=config, alias=word)
                 config.pop_last_keyword()
             elif "," in word:
+                word = word[:-1]
                 config.add_parsing_value(parsing_value=(word, None))
                 add_table_to_query(config=config)
                 config.pop_last_parsing_value()
