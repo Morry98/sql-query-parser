@@ -11,7 +11,7 @@ def compute(word: str, config: Configurations) -> Tuple[bool, Configurations]:
     for class_ in keywords.__dict__.items():
         if class_[0].startswith("_"):
             continue
-        result, config = class_[1].compute(word=word, config=config)
+        result, config = class_[1].compute(word=basic_word, config=config)
         if result is True:
             return True, config
     return False, config
