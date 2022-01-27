@@ -58,7 +58,8 @@ query1 = sql_parser.parse_query("""SELECT
     COUNT(t1.b),
     v.story_id,
     t1.test as tt,
-    v.test1
+    v.test1,
+    COUNT(t1.ff)
     FROM votes as v, t1
     where v.story_id = :story_id and (v.date > :date or v.role = :role);
      """)
