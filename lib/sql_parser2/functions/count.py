@@ -16,8 +16,8 @@ def compute(word: str, config: Configurations) -> Tuple[bool, Configurations]:
             return True, config
     elif len(config.keywords) > 1 and config.keywords[-2] == "function_count":
         if config.keywords[-1] == "as":
-            if len(config.parsing_column) != 1:
-                raise Exception(f"Function count support only one column, {len(config.parsing_column)} found")
+            if len(config.parsing_value) != 1:
+                raise Exception(f"Function count support only one column, {len(config.parsing_value)} found")
             add_to_query(alias=word, config=config)
             config.pop_last_keyword()
             config.pop_last_keyword()
@@ -28,20 +28,20 @@ def compute(word: str, config: Configurations) -> Tuple[bool, Configurations]:
             matches = REGEX_PATTERN.findall(word)
             if len(matches) == 1:
                 config.add_keyword("function_count")
-                config.add_parsing_column(parsing_column=(matches[0], None))
+                config.add_parsing_value(parsing_value=(matches[0], None))
                 add_to_query(config=config)
                 if "," in word:
                     config.pop_last_keyword()
-                    config.pop_last_parsing_column()
+                    config.pop_last_parsing_value()
             return True, config
     return False, config
 
 
 def add_to_query(config: Configurations, alias: Optional[str] = None):
-    parsing_column = config.pop_last_parsing_column()
+    parsing_column = config.pop_last_parsing_value()
     column = parsing_column[0]
     if alias is None:
-        config.add_parsing_column(parsing_column=parsing_column)
+        config.add_parsing_value(parsing_value=parsing_column)
         alias = parsing_column[1]
     elif parsing_column[1] is not None:
         raise Exception(f"Double alias for {column} column: {parsing_column[1]} and {alias}")

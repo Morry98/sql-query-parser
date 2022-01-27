@@ -10,7 +10,7 @@ class Configurations:
 
     def __init__(self, query: Query) -> None:
         self.__keyword: List[str] = []
-        self.__parsing_column: List[Tuple[str, Optional[str]]] = []  # [(column, alias)]
+        self.__parsing_value: List[Tuple[str, Optional[str]]] = []  # [(column, alias)]
         self.__query = query
 
     @property
@@ -22,8 +22,8 @@ class Configurations:
         return self.__query
 
     @property
-    def parsing_column(self) -> List[Tuple[str, Optional[str]]]:
-        return self.__parsing_column.copy()
+    def parsing_value(self) -> List[Tuple[str, Optional[str]]]:
+        return self.__parsing_value.copy()
 
     @keywords.setter
     def keywords(self, keywords: List[Table]):
@@ -37,10 +37,10 @@ class Configurations:
             raise Exception("No Keyword to pop")
         return self.__keyword.pop(-1)
 
-    def add_parsing_column(self, parsing_column: Tuple[str, Optional[str]]):
-        self.__parsing_column.append(parsing_column)
+    def add_parsing_value(self, parsing_value: Tuple[str, Optional[str]]):
+        self.__parsing_value.append(parsing_value)
 
-    def pop_last_parsing_column(self) -> Tuple[str, Optional[str]]:
-        if len(self.__parsing_column) == 0 or self.__parsing_column is None:
-            raise Exception("No parsing_column to pop")
-        return self.__parsing_column.pop(-1)
+    def pop_last_parsing_value(self) -> Tuple[str, Optional[str]]:
+        if len(self.__parsing_value) == 0 or self.__parsing_value is None:
+            raise Exception("No parsing_value to pop")
+        return self.__parsing_value.pop(-1)
