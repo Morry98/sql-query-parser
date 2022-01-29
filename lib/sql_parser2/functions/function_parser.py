@@ -8,7 +8,7 @@ def compute(word: str, config: Configurations) -> Tuple[bool, Configurations]:
     if type(word) is not str:
         raise Exception('word must be a string!')
     for class_ in functions.__dict__.items():
-        if class_[0].startswith("_"):
+        if class_[0].startswith("_") or class_[0] == "function_parser":
             continue
         result, config = class_[1].compute(word=word, config=config)
         if result is True:
