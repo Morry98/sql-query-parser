@@ -25,6 +25,10 @@ class Configurations:
     def parsing_value(self) -> List[Tuple[str, Optional[str]]]:
         return self.__parsing_value.copy()
 
+    @parsing_value.setter
+    def parsing_value(self, parsing_value: List[Tuple[str, Optional[str]]]):
+        self.__parsing_value = parsing_value.copy()
+
     @keywords.setter
     def keywords(self, keywords: List[Table]):
         self.__keyword = keywords.copy()
