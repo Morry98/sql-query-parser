@@ -1,37 +1,12 @@
 import sqlparse
 
-from lib.engine import Engine
 from loguru import logger
 
 from lib.sql_parser.sql_parser_test import SqlParserTest
 from lib.sql_parser import sql_parser as old_sql_parser
 from lib.sql_parser2 import sql_parser
 
-db_path = "sqlite:///D:\\PersonalProject\\ciuf\\test.db"
-logger.info(db_path)
-
-# x = Engine(db_path)
-#
-# x.update_dag(
-#     """
-#     CREATE VIEW test AS
-#     SELECT story_id, COUNT(*) AS vcount
-#     FROM votes GROUP BY story_id;
-#     """
-# )
-#
-# x.update_dag(
-#     """
-#     CREATE VIEW StoriesWithVC AS
-#     SELECT id, author, title, url, vcount
-#     FROM stories
-#     JOIN VoteCount ON VoteCount.story_id = stories.id
-#     WHERE stories.id = ?;
-#     """
-# )
-#
-# x.print_dag()
-
+logger.info("START")
 
 
 # Old
