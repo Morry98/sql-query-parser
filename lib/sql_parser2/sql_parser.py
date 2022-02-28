@@ -9,13 +9,13 @@ from lib.sql_parser2.configurations import Configurations
 
 def parse_query(query_str: str) -> Query:
     config = Configurations(query=Query(text=query_str))
-    query_str = query_str.replace('\n', '')
+    query_str = query_str.replace('\n', '').replace(";", "")
     for word in query_str.split(' '):
         if word == '':
             continue
         # TODO REMOVE
-        if word.lower().strip() == 'where':
-            break
+        # if word.lower().strip() == 'and':
+        #     break
         result, config = word_recognition.compute(word=word, config=config)
         if not result:
             raise Exception(f'{word} Statement not implemented')

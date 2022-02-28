@@ -61,7 +61,7 @@ query1 = sql_parser.parse_query("""SELECT
     v.test1,
     COUNT(t1.ff)
     FROM votes as v, t1
-    where v.story_id = :story_id and (v.date > :date or v.role = :role);
+    where v.story_id = :story_id and (v.date > :date or v.role = :role) and t1.test = v.test;
      """)
 query1_old = old_sql_parser.parse_query("""SELECT COUNT(v.star) AS vote, v.story_id
      FROM votes as v
@@ -75,4 +75,5 @@ query1_old = old_sql_parser.parse_query("""SELECT COUNT(v.star) AS vote, v.story
 #     WHERE stories.id = ?;""")
 
 print(query1)
+#print(query1_old)
 #print(query2)
