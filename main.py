@@ -1,32 +1,8 @@
-import sqlparse
-
 from loguru import logger
 
-from lib.sql_parser.sql_parser_test import SqlParserTest
-from lib.sql_parser import sql_parser as old_sql_parser
-from lib.sql_parser2 import sql_parser
+from lib.sql_parser import sql_parser
 
 logger.info("START")
-
-
-# Old
-# sql_parser_test = SqlParserTest()
-#
-# sql_parser_test.query = """SELECT v.story_id, COUNT(v.pippo) AS aa
-#      FROM votes as v;
-#     """
-#
-# sql_parser_test.test(sqlparse.parse("""SELECT v.story_id, COUNT(v.pippo) AS aa
-#      FROM votes as v;
-#     """)[0])
-# sql_parser_test.print()
-#
-# print("\n\n\n")
-#
-# print(f"{sql_parser_test.tables=}")
-# print(f"{sql_parser_test.functions=}")
-# print(f"{sql_parser_test.columns=}")
-
 
 query1 = sql_parser.parse_query("""SELECT
     COUNT(v.star) AS aa,
@@ -37,18 +13,12 @@ query1 = sql_parser.parse_query("""SELECT
     COUNT(t1.ff)
     FROM votes as v, t1
     where v.story_id = :story_id and (v.date > :date or v.role = :role) and t1.test = v.test;
-     """)
-query1_old = old_sql_parser.parse_query("""SELECT COUNT(v.star) AS vote, v.story_id
-     FROM votes as v
-     where v.story_id = :story_id and (v.date > :date or v.role = :role);
-     """)
-
-#query2 = sql_parser.parse_query("""
-#SELECT stories.id, stories.author, stories.title, stories.url, stories.vcount
+    """)
+# query2 = sql_parser.parse_query("""
+#     SELECT stories.id, stories.author, stories.title, stories.url, stories.vcount
 #     FROM stories
 #     JOIN VoteCount ON VoteCount.story_id = stories.id
 #     WHERE stories.id = ?;""")
 
 print(query1)
-#print(query1_old)
-#print(query2)
+# print(query2)

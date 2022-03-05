@@ -1,6 +1,7 @@
 from typing import Tuple, Optional
 
 from lib.sql_parser.configurations import Configurations
+from lib.sql_parser.table import Table
 
 
 def compute(word: str, config: Configurations) -> Tuple[bool, Configurations]:
