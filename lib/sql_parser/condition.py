@@ -26,14 +26,14 @@ class Condition:
     def conditions(self) -> List[Condition | str]:
         return self.__conditions.copy()
 
-    @condition_type.setter
+    @condition_type.setter  # type:ignore
     def condition_type(self, condition_type: str):
         if not self.__blocked:
             self.__condition_type = condition_type
         else:
             raise ObjectBlockedException(object_type="Condition")
 
-    @conditions.setter
+    @conditions.setter  # type:ignore
     def conditions(self, conditions: List[Condition | str]):
         if not self.__blocked:
             self.__conditions = conditions

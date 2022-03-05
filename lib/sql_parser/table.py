@@ -36,14 +36,14 @@ class Table:
     def functions(self) -> Dict[str, str]:
         return self.__functions.copy()
 
-    @name.setter
+    @name.setter  # type:ignore
     def name(self, name: str):
         if not self.__blocked:
             self.__name = name
         else:
             raise ObjectBlockedException(object_type="Table", object_name=self.__name)
 
-    @alias.setter
+    @alias.setter  # type:ignore
     def alias(self, alias):
         if not self.__blocked:
             self.__alias = alias

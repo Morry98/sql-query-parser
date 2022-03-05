@@ -1,6 +1,7 @@
 from typing import Tuple, Optional
 
 from lib.sql_parser.configurations import Configurations
+from lib.sql_parser.table import Table
 
 
 def compute(word: str, config: Configurations) -> Tuple[bool, Configurations]:
@@ -41,8 +42,10 @@ def __add_table_to_query(config: Configurations, alias: Optional[str] = None):
     if table_by_name is not None and table_by_alias is not None:
         raise Exception(f"Found double table object for table {table_str} alias {alias}")
     table = table_by_alias if table_by_alias is not None else table_by_name
-    if table is None:
+    if table is None and alias is not None:
         table = Table(alias=alias)
         config.query.add_table(table)
-    table.name = table_str
-    table.alias = alias
+    elif table is None and alias is not None:
+        raise ValueError("Null Table name and alias")
+    table.name = table_str  # type:ignore
+    table.alias = alias  # type:ignore

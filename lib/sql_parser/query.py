@@ -34,7 +34,7 @@ class Query:
     def tables(self) -> List[Table]:
         return self.__tables.copy()
 
-    def get_table_by_name_or_alias(self, name: str) -> Optional[Table]:
+    def get_table_by_name_or_alias(self, name: Optional[str]) -> Optional[Table]:
         if name in self.__tables_by_alias:
             return self.__tables[self.__tables_by_alias[name]]
         if name in self.__tables_by_name:
@@ -45,7 +45,7 @@ class Query:
     def condition(self) -> List[Condition]:
         return self.__condition.copy()
 
-    @tables.setter
+    @tables.setter  # type:ignore
     def tables(self, tables: List[Table]):
         if not self.__blocked:
             self.__tables = tables.copy()
@@ -59,7 +59,7 @@ class Query:
         else:
             raise ObjectBlockedException(object_type="Query")
 
-    @condition.setter
+    @condition.setter  # type:ignore
     def condition(self, condition: List[Condition]):
         if not self.__blocked:
             self.__condition = condition.copy()

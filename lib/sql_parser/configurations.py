@@ -45,27 +45,27 @@ class Configurations:
     def parsing_value(self) -> List[Tuple[str, Optional[str]]]:
         return self.__parsing_value.copy()
 
-    @parsing_value.setter
+    @parsing_value.setter  # type:ignore
     def parsing_value(self, parsing_value: List[Tuple[str, Optional[str]]]):
         self.__parsing_value = parsing_value.copy()
 
-    @is_new_condition.setter
+    @is_new_condition.setter  # type:ignore
     def is_new_condition(self, is_new_condition: bool):
         self.__is_new_condition = is_new_condition
 
-    @keywords.setter
-    def keywords(self, keywords: List[Table]):
+    @keywords.setter  # type:ignore
+    def keywords(self, keywords: List[str]):
         self.__keyword = keywords.copy()
 
-    @conditions.setter
+    @conditions.setter  # type:ignore
     def conditions(self, conditions: List[str | List[str]]):
         self.__conditions = conditions.copy()
 
-    @conditions_type.setter
+    @conditions_type.setter  # type:ignore
     def conditions_type(self, conditions_type: List[str | List[str]]):
         self.__conditions_type = conditions_type.copy()
 
-    @condition_position.setter
+    @condition_position.setter  # type:ignore
     def condition_position(self, position: int):
         self.__condition_position = position
         i = self.__condition_position + 1 - len(self.__conditions)
@@ -145,13 +145,14 @@ def check_lists_all_equal_value(list_to_check: List[str | List]) -> bool:
 def get_query_condition_from_lists(conditions: List[str | List[str]],
                                    conditions_type: List[str | List[str]]
                                    ) -> Condition:
-    cond = Condition(condition_type= conditions_type[0])
+    # TODO Check if the where condition starts with open parenthesis
+    cond = Condition(condition_type=conditions_type[0])
     index = 0
     for c in conditions:
         if type(c) == list:
-            cond.add_condition(get_query_condition_from_lists(conditions=c,
-                                                              conditions_type=conditions_type[index]))
+            cond.add_condition(get_query_condition_from_lists(conditions=c,  # type:ignore
+                                                              conditions_type=conditions_type[index]))  # type:ignore
         else:
-            cond.add_condition(c)
+            cond.add_condition(c)  # type:ignore
         index += 1
     return cond

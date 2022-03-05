@@ -13,25 +13,25 @@ def compute(word: str, config: Configurations) -> Tuple[bool, Configurations]:
         match word:
             case "and" | "or":
                 config.add_condition_type(word)
-                config.is_new_condition = True
+                config.is_new_condition = True  # type:ignore
             case _:
                 round_bracket_close = False
                 if "(" in word:
                     word = word.replace("(", "")
-                    config.condition_position += 1
-                    config.is_new_condition = True
+                    config.condition_position += 1  # type:ignore
+                    config.is_new_condition = True  # type:ignore
                 elif ")" in word:
                     word = word.replace(")", "")
                     round_bracket_close = True
                 if config.is_new_condition:
                     config.add_value_to_condition(word)
-                    config.is_new_condition = False
+                    config.is_new_condition = False  # type:ignore
                 else:
                     value = config.pop_value_from_condition()
                     value = value + " " + word
                     config.add_value_to_condition(value)
                 if round_bracket_close:
-                    config.condition_position -= 1
-                    config.is_new_condition = True
+                    config.condition_position -= 1  # type:ignore
+                    config.is_new_condition = True  # type:ignore
         return True, config
     return False, config
