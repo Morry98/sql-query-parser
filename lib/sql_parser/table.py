@@ -1,6 +1,6 @@
-from typing import List, Dict, Optional
+from typing import Dict, Optional
 
-from lib.sql_parser.object_blocked_exception import ObjectBlockedException
+from lib.exceptions.object_blocked_exception import ObjectBlockedException
 
 
 class Table:

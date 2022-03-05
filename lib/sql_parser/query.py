@@ -1,7 +1,7 @@
 from typing import List, Dict, Optional
 
 from lib.sql_parser.condition import Condition
-from lib.sql_parser.object_blocked_exception import ObjectBlockedException
+from lib.exceptions.object_blocked_exception import ObjectBlockedException
 from lib.sql_parser.table import Table
 
 

@@ -1,9 +1,9 @@
 from typing import Tuple
 
-from lib.sql_parser2.general_purpose import general_purpose_parser
-from lib.sql_parser2.keywords import keyword_parser
-from lib.sql_parser2.functions import function_parser
-from lib.sql_parser2.configurations import Configurations
+from lib.sql_parser.general_purpose import general_purpose_parser
+from lib.sql_parser.keywords import keyword_parser
+from lib.sql_parser.functions import function_parser
+from lib.sql_parser.configurations import Configurations
 
 
 def compute(word: str, config: Configurations) -> Tuple[bool, Configurations]:
