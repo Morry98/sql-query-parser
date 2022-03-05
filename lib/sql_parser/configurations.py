@@ -1,7 +1,7 @@
 from typing import List, Dict, Optional, Tuple
 
+from lib.exceptions.different_conditions_in_parenthesis_exception import DifferentConditionsInParenthesisException
 from lib.sql_parser.condition import Condition
-from lib.sql_parser.object_blocked_exception import ObjectBlockedException
 from lib.sql_parser.query import Query
 from lib.sql_parser.table import Table
 
@@ -12,8 +12,8 @@ class Configurations:
         self.__keyword: List[str] = []
         self.__parsing_value: List[Tuple[str, Optional[str]]] = []  # [(column, alias)]
         self.__query = query
-        self.__conditions_type: List[str] = []
-        self.__conditions: List[List[str]] = [[]]
+        self.__conditions_type: List[str | List[str]] = []
+        self.__conditions: List[str | List[str]] = []
         self.__condition_position: int = 0
         self.__is_new_condition: bool = True
 
@@ -26,11 +26,11 @@ class Configurations:
         return self.__is_new_condition
 
     @property
-    def conditions(self) -> List[List[str]]:
+    def conditions(self) -> List[str | List[str]]:
         return self.__conditions.copy()
 
     @property
-    def conditions_type(self) -> List[str]:
+    def conditions_type(self) -> List[str | List[str]]:
         return self.__conditions_type.copy()
 
     @property
@@ -58,11 +58,11 @@ class Configurations:
         self.__keyword = keywords.copy()
 
     @conditions.setter
-    def conditions(self, conditions: List[List[str]]):
+    def conditions(self, conditions: List[str | List[str]]):
         self.__conditions = conditions.copy()
 
     @conditions_type.setter
-    def conditions_type(self, conditions_type: List[str]):
+    def conditions_type(self, conditions_type: List[str | List[str]]):
         self.__conditions_type = conditions_type.copy()
 
     @condition_position.setter
@@ -82,23 +82,32 @@ class Configurations:
 
     def create_new_condition(self):
         self.__conditions.append([])
-
-    def add_condition(self, condition: List[str]):
-        self.__conditions.append(condition.copy())
+        self.__conditions_type.append([])
 
     def add_value_to_condition(self, value: str):
-        self.__conditions[self.__condition_position].append(value)
+        if self.__condition_position == 0:
+            self.__conditions.append(value)
+        else:
+            self.__conditions[self.__condition_position].append(value)
 
     def pop_value_from_condition(self) -> str:
-        return self.__conditions[self.__condition_position].pop(-1)
+        if self.__condition_position == 0:
+            return self.__conditions.pop(-1)
+        else:
+            return self.__conditions[self.__condition_position].pop(-1)
 
-    def pop_last_condition(self) -> List[str]:
+    def pop_last_condition(self) -> str | List[str]:
         if len(self.__conditions) == 0 or self.__conditions is None:
             raise Exception("No conditions to pop")
         return self.__conditions.pop(-1)
 
     def add_condition_type(self, type_: str):
-        self.__conditions_type.append(type_)
+        if self.__condition_position == 0:
+            self.__conditions_type.append(type_)
+        else:
+            self.__conditions_type[self.__condition_position].append(type_)
+        if self.check_conditions_type() is not True:
+            raise DifferentConditionsInParenthesisException()
 
     def add_parsing_value(self, parsing_value: Tuple[str, Optional[str]]):
         self.__parsing_value.append(parsing_value)
@@ -107,3 +116,42 @@ class Configurations:
         if len(self.__parsing_value) == 0 or self.__parsing_value is None:
             raise Exception("No parsing_value to pop")
         return self.__parsing_value.pop(-1)
+
+    def check_conditions_type(self) -> bool:
+        return check_lists_all_equal_value(self.__conditions_type)
+
+    def compute_condition(self) -> None:
+        condition: Condition = get_query_condition_from_lists(
+            conditions=self.__conditions,
+            conditions_type=self.__conditions_type)
+        self.query.add_condition(condition)
+
+
+def check_lists_all_equal_value(list_to_check: List[str | List]) -> bool:
+    c_type: Optional[str] = None
+    for cond_type in list_to_check:
+        if type(cond_type) == list:
+            result = check_lists_all_equal_value(cond_type)
+            if result is False:
+                return False
+        else:
+            if c_type is None:
+                c_type = cond_type
+            elif c_type != cond_type:
+                return False
+    return True
+
+
+def get_query_condition_from_lists(conditions: List[str | List[str]],
+                                   conditions_type: List[str | List[str]]
+                                   ) -> Condition:
+    cond = Condition(condition_type= conditions_type[0])
+    index = 0
+    for c in conditions:
+        if type(c) == list:
+            cond.add_condition(get_query_condition_from_lists(conditions=c,
+                                                              conditions_type=conditions_type[index]))
+        else:
+            cond.add_condition(c)
+        index += 1
+    return cond
