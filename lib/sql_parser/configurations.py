@@ -19,6 +19,28 @@ class Configurations:
         self.__condition_position: int = 0
         self.__is_new_condition: bool = True
 
+    def __eq__(
+            self,
+            other: object
+    ) -> bool:
+        if not isinstance(other, Configurations):
+            raise TypeError("Configurations can only be compared to other Configurations")
+        if self.__query != other.query:
+            return False
+        if self.__keyword != other.__keyword:
+            return False
+        if self.__parsing_value != other.__parsing_value:
+            return False
+        if self.__condition_position != other.__condition_position:
+            return False
+        if self.__conditions != other.__conditions:
+            return False
+        if self.__conditions_type != other.__conditions_type:
+            return False
+        if self.__is_new_condition != other.__is_new_condition:
+            return False
+        return True
+
     @property
     def keywords(self) -> List[str]:
         return self.__keyword.copy()
