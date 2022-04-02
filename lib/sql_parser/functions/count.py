@@ -11,8 +11,6 @@ def compute(
         word: str,
         config: Configurations
 ) -> Tuple[bool, Configurations]:
-    if type(word) is not str:
-        raise Exception('word must be a string!')
     if len(config.keywords) > 0 and config.keywords[-1] == "function_count":
         if "as" in word:
             config.add_keyword("as")

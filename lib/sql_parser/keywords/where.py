@@ -7,8 +7,6 @@ def compute(
         word: str,
         config: Configurations
 ) -> Tuple[bool, Configurations]:
-    if type(word) is not str:
-        raise Exception('word must be a string!')
     if "where" in word:
         keywords = config.keywords
         parsing_value = config.parsing_value

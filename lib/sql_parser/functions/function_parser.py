@@ -9,8 +9,6 @@ def compute(
         word: str,
         config: Configurations
 ) -> Tuple[bool, Configurations]:
-    if type(word) is not str:
-        raise Exception('word must be a string!')
     for class_ in functions.__dict__.items():
         if class_[0].startswith("_") or class_[0] == os.path.basename(__file__).replace(".py", ""):
             continue

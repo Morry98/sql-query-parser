@@ -7,8 +7,6 @@ def compute(
         word: str,
         config: Configurations
 ) -> Tuple[bool, Configurations]:
-    if type(word) is not str:
-        raise Exception('word must be a string!')
     if "select" in word:
         keywords = config.keywords
         if len(keywords) > 0:
