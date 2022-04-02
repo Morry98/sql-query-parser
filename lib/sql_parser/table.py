@@ -9,7 +9,10 @@ class Table:
         return f"Table= {self.__name}\nAlias= {self.__alias}\nColumns= {self.__columns}\n" \
                f"Functions= {self.__functions}\n"
 
-    def __init__(self, alias: str) -> None:
+    def __init__(
+            self,
+            alias: str
+    ) -> None:
         self.__name: str = alias
         self.__alias: str = alias
         self.__columns: Dict[str, str] = {}  # Col: Alias
@@ -24,9 +27,29 @@ class Table:
     def name(self) -> str:
         return self.__name
 
+    @name.setter
+    def name(
+            self,
+            name: str
+    ) -> None:
+        if not self.__blocked:
+            self.__name = name
+        else:
+            raise ObjectBlockedException(object_type="Table", object_name=self.__name)
+
     @property
     def alias(self) -> str:
         return self.__alias
+
+    @alias.setter
+    def alias(
+            self,
+            alias: str
+    ) -> None:
+        if not self.__blocked:
+            self.__alias = alias
+        else:
+            raise ObjectBlockedException(object_type="Table", object_name=self.__name)
 
     @property
     def columns(self) -> Dict[str, str]:
@@ -36,24 +59,14 @@ class Table:
     def functions(self) -> Dict[str, str]:
         return self.__functions.copy()
 
-    @name.setter  # type:ignore
-    def name(self, name: str):
-        if not self.__blocked:
-            self.__name = name
-        else:
-            raise ObjectBlockedException(object_type="Table", object_name=self.__name)
-
-    @alias.setter  # type:ignore
-    def alias(self, alias):
-        if not self.__blocked:
-            self.__alias = alias
-        else:
-            raise ObjectBlockedException(object_type="Table", object_name=self.__name)
-
-    def block_table(self):
+    def block_table(self) -> None:
         self.__blocked = False
 
-    def add_column(self, column: str, alias: Optional[str] = None):
+    def add_column(
+            self,
+            column: str,
+            alias: Optional[str] = None
+    ) -> None:
         if not self.__blocked:
             if alias is None:
                 alias = column
@@ -61,7 +74,11 @@ class Table:
         else:
             raise ObjectBlockedException(object_type="Table", object_name=self.__name)
 
-    def add_function(self, function: str, alias: Optional[str] = None):
+    def add_function(
+            self,
+            function: str,
+            alias: Optional[str] = None
+    ) -> None:
         if not self.__blocked:
             if alias is None:
                 alias = function.lower().strip()

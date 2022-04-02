@@ -4,10 +4,13 @@ import re
 from lib.sql_parser.table import Table
 from lib.sql_parser.configurations import Configurations
 
-REGEX_PATTERN = re.compile("count\((.*)\)")
+REGEX_PATTERN = re.compile(r"count\((.*)\)")
 
 
-def compute(word: str, config: Configurations) -> Tuple[bool, Configurations]:
+def compute(
+        word: str,
+        config: Configurations
+) -> Tuple[bool, Configurations]:
     if type(word) is not str:
         raise Exception('word must be a string!')
     if len(config.keywords) > 0 and config.keywords[-1] == "function_count":
@@ -41,7 +44,10 @@ def compute(word: str, config: Configurations) -> Tuple[bool, Configurations]:
     return False, config
 
 
-def add_to_query(config: Configurations, alias: Optional[str] = None):
+def add_to_query(
+        config: Configurations,
+        alias: Optional[str] = None
+) -> None:
     parsing_column = config.pop_last_parsing_value()
     column = parsing_column[0]
     if alias is None:

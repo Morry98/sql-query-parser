@@ -4,7 +4,10 @@ from lib.sql_parser.configurations import Configurations
 from lib.sql_parser.table import Table
 
 
-def compute(word: str, config: Configurations) -> Tuple[bool, Configurations]:
+def compute(
+        word: str,
+        config: Configurations
+) -> Tuple[bool, Configurations]:
     if (len(config.keywords) > 0 and config.keywords[-1] == "from") or (
             len(config.keywords) > 1 and config.keywords[-2] == "from" and config.keywords[-1] == "as"):
         if "as" in word:
@@ -28,7 +31,10 @@ def compute(word: str, config: Configurations) -> Tuple[bool, Configurations]:
     return False, config
 
 
-def __add_table_to_query(config: Configurations, alias: Optional[str] = None):
+def __add_table_to_query(
+        config: Configurations,
+        alias: Optional[str] = None
+) -> None:
     parsing_table = config.pop_last_parsing_value()
     table_str = parsing_table[0]
     if alias is None:
@@ -45,7 +51,7 @@ def __add_table_to_query(config: Configurations, alias: Optional[str] = None):
     if table is None and alias is not None:
         table = Table(alias=alias)
         config.query.add_table(table)
-    elif table is None and alias is not None:
+    elif table is None:
         raise ValueError("Null Table name and alias")
-    table.name = table_str  # type:ignore
-    table.alias = alias  # type:ignore
+    table.name = table_str
+    table.alias = alias if alias is not None else table.name

@@ -1,11 +1,11 @@
-from typing import List, Dict, Optional
-
 from lib.sql_parser.query import Query
 from lib.sql_parser import word_recognition
 from lib.sql_parser.configurations import Configurations
 
 
-def parse_query(query_str: str) -> Query:
+def parse_query(
+        query_str: str
+) -> Query:
     config = Configurations(query=Query(text=query_str))
     query_str = query_str.replace('\n', '').replace(";", "")
     for word in query_str.split(' '):
@@ -18,7 +18,7 @@ def parse_query(query_str: str) -> Query:
     config.check_conditions_type()
     config.compute_condition()
 
-    query = config.query
+    query: Query = config.query
     for table in query.tables:
         table.block_table()
     for condition in query.condition:

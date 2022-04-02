@@ -1,5 +1,3 @@
-from typing import Optional
-
 
 class DifferentConditionsInParenthesisException(Exception):
     """Exception raised when in a parenthesis there are different conditions.
@@ -9,10 +7,13 @@ class DifferentConditionsInParenthesisException(Exception):
         message: explanation of the error
     """
 
-    def __init__(self, message: str = "There are different conditions type in a parenthesis"):
+    def __init__(
+            self,
+            message: str = "There are different conditions type in a parenthesis"
+    ) -> None:
         self.message: str = message
         super().__init__(self.message)
 
-    def __str__(self):
+    def __str__(self) -> str:
         string = f"Message: {self.message}"
         return string

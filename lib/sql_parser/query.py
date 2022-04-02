@@ -14,7 +14,10 @@ class Query:
         string += f"Condition: \n{self.__condition}"
         return string
 
-    def __init__(self, text: str) -> None:
+    def __init__(
+            self,
+            text: str
+    ) -> None:
         self.__text: str = text
         self.__tables: List[Table] = []
         self.__tables_by_alias: Dict[str, int] = {}
@@ -34,19 +37,11 @@ class Query:
     def tables(self) -> List[Table]:
         return self.__tables.copy()
 
-    def get_table_by_name_or_alias(self, name: Optional[str]) -> Optional[Table]:
-        if name in self.__tables_by_alias:
-            return self.__tables[self.__tables_by_alias[name]]
-        if name in self.__tables_by_name:
-            return self.__tables[self.__tables_by_name[name]]
-        return None
-
-    @property
-    def condition(self) -> List[Condition]:
-        return self.__condition.copy()
-
-    @tables.setter  # type:ignore
-    def tables(self, tables: List[Table]):
+    @tables.setter
+    def tables(
+            self,
+            tables: List[Table]
+    ) -> None:
         if not self.__blocked:
             self.__tables = tables.copy()
             self.__tables_by_name = {}
@@ -59,17 +54,37 @@ class Query:
         else:
             raise ObjectBlockedException(object_type="Query")
 
-    @condition.setter  # type:ignore
-    def condition(self, condition: List[Condition]):
+    def get_table_by_name_or_alias(
+            self,
+            name: Optional[str]
+    ) -> Optional[Table]:
+        if name in self.__tables_by_alias:
+            return self.__tables[self.__tables_by_alias[name]]
+        if name in self.__tables_by_name:
+            return self.__tables[self.__tables_by_name[name]]
+        return None
+
+    @property
+    def condition(self) -> List[Condition]:
+        return self.__condition.copy()
+
+    @condition.setter
+    def condition(
+            self,
+            condition: List[Condition]
+    ) -> None:
         if not self.__blocked:
             self.__condition = condition.copy()
         else:
             raise ObjectBlockedException(object_type="Query")
 
-    def block_query(self):
+    def block_query(self) -> None:
         self.__blocked = False
 
-    def add_table(self, table: Table):
+    def add_table(
+            self,
+            table: Table
+    ) -> None:
         if not self.__blocked:
             self.__tables.append(table)
             self.__tables_by_name[table.name] = len(self.__tables) - 1
@@ -77,7 +92,10 @@ class Query:
         else:
             raise ObjectBlockedException(object_type="Query")
 
-    def add_condition(self, condition: Condition):
+    def add_condition(
+            self,
+            condition: Condition
+    ) -> None:
         if not self.__blocked:
             self.__condition.append(condition)
         else:

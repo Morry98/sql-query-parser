@@ -6,7 +6,10 @@ from lib.sql_parser.functions import function_parser
 from lib.sql_parser.configurations import Configurations
 
 
-def compute(word: str, config: Configurations) -> Tuple[bool, Configurations]:
+def compute(
+        word: str,
+        config: Configurations
+) -> Tuple[bool, Configurations]:
     if type(word) is not str:
         raise Exception('word must be a string!')
     for class_ in [function_parser, keyword_parser]:
