@@ -25,6 +25,26 @@ class Query:
         self.__condition: List[Condition] = []
         self.__blocked: bool = False
 
+    def __eq__(
+            self,
+            other: object
+    ) -> bool:
+        if not isinstance(other, Query):
+            return NotImplemented
+        if self.__text != other.__text:
+            return False
+        if self.__tables != other.__tables:
+            return False
+        if self.__tables_by_alias != other.__tables_by_alias:
+            return False
+        if self.__tables_by_name != other.__tables_by_name:
+            return False
+        if self.__condition != other.__condition:
+            return False
+        if self.__blocked != other.__blocked:
+            return False
+        return True
+
     @property
     def blocked(self) -> bool:
         return self.__blocked
