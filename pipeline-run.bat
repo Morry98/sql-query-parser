@@ -4,6 +4,8 @@ ECHO "Coding style checking with flake8"
 flake8 lib main.py || goto ERROR_HANDLING
 ECHO "Running tests"
 coverage run -m pytest lib || goto ERROR_HANDLING
+ECHO "Create HTML Coverage report"
+coverage html || goto ERROR_HANDLING
 ECHO "Coverage report"
 coverage report --show-missing --skip-covered --skip-empty || goto ERROR_HANDLING
 ECHO "Pipeline finished successfully"
