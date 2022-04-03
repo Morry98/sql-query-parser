@@ -99,6 +99,11 @@ class Table:
             raise ObjectBlockedException(object_type="Table", object_name=self.__name)
 
     def block_table(self) -> None:
+        """
+        Block table
+
+        Returns: None
+        """
         self.__blocked = True
 
     def add_column(
@@ -106,6 +111,17 @@ class Table:
             column: str,
             alias: Optional[str] = None
     ) -> None:
+        """
+        Add column to table
+
+        Args:
+            column: Column name
+            alias: Column alias
+
+        Raises: ObjectBlockedException when table is blocked
+
+        Returns: None
+        """
         if not self.__blocked:
             if alias is None:
                 alias = column
@@ -118,6 +134,17 @@ class Table:
             function: str,
             alias: Optional[str] = None
     ) -> None:
+        """
+        Add function to table
+
+        Args:
+            function: Function name
+            alias: Function alias
+
+        Raises: ObjectBlockedException when table is blocked
+
+        Returns: None
+        """
         if not self.__blocked:
             if alias is None:
                 alias = function.lower().strip()
