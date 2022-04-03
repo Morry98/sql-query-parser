@@ -19,9 +19,28 @@ class Table:
         self.__functions: Dict[str, str] = {}
         self.__blocked: bool = False
 
+    def __eq__(
+            self,
+            other: object
+    ) -> bool:
+        if not isinstance(other, Table):
+            raise TypeError("Can't compare Table with other type")
+        return self.__name == other.__name and self.__alias == other.__alias and self.__columns == other.__columns and \
+            self.__functions == other.__functions and self.__blocked == other.__blocked
+
     @property
     def blocked(self) -> bool:
         return self.__blocked
+
+    @blocked.setter
+    def blocked(
+            self,
+            blocked: bool
+    ) -> None:
+        if not self.__blocked:
+            self.__blocked = blocked
+        else:
+            raise ObjectBlockedException(object_type="Table", object_name=self.__name)
 
     @property
     def name(self) -> str:
@@ -55,12 +74,32 @@ class Table:
     def columns(self) -> Dict[str, str]:
         return self.__columns.copy()
 
+    @columns.setter
+    def columns(
+            self,
+            columns: Dict[str, str]
+    ) -> None:
+        if not self.__blocked:
+            self.__columns = columns.copy()
+        else:
+            raise ObjectBlockedException(object_type="Table", object_name=self.__name)
+
     @property
     def functions(self) -> Dict[str, str]:
         return self.__functions.copy()
 
+    @functions.setter
+    def functions(
+            self,
+            functions: Dict[str, str]
+    ) -> None:
+        if not self.__blocked:
+            self.__functions = functions.copy()
+        else:
+            raise ObjectBlockedException(object_type="Table", object_name=self.__name)
+
     def block_table(self) -> None:
-        self.__blocked = False
+        self.__blocked = True
 
     def add_column(
             self,
