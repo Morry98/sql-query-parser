@@ -1,9 +1,9 @@
 from copy import copy
 from unittest import TestCase
-from lib.sql_parser.keywords import select
+from sql_parser.keywords import select
 
-from lib.sql_parser.configurations import Configurations
-from lib.sql_parser.query import Query
+from sql_parser.configurations import Configurations
+from sql_parser.query import Query
 
 
 class SelectTest(TestCase):

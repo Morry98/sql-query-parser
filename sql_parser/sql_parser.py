@@ -1,6 +1,6 @@
-from lib.sql_parser.query import Query
-from lib.sql_parser import word_recognition
-from lib.sql_parser.configurations import Configurations
+from sql_parser.query import Query
+from sql_parser import word_recognition
+from sql_parser.configurations import Configurations
 
 
 def parse_query(

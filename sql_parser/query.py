@@ -1,8 +1,8 @@
 from typing import List, Dict, Optional
 
-from lib.sql_parser.condition import Condition
-from lib.exceptions.object_blocked_exception import ObjectBlockedException
-from lib.sql_parser.table import Table
+from sql_parser.condition import Condition
+from sql_parser.exceptions.object_blocked_exception import ObjectBlockedException
+from sql_parser.table import Table
 
 
 class Query:

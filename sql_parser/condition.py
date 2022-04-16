@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import List
 
-from lib.exceptions.object_blocked_exception import ObjectBlockedException
+from sql_parser.exceptions.object_blocked_exception import ObjectBlockedException
 
 
 class Condition:

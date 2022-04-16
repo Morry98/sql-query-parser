@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from lib.exceptions.object_blocked_exception import ObjectBlockedException
-from lib.sql_parser.table import Table
+from sql_parser.exceptions.object_blocked_exception import ObjectBlockedException
+from sql_parser.table import Table
 
 
 class TableTest(TestCase):

@@ -1,8 +1,8 @@
 from typing import Tuple, Optional
 import re
 
-from lib.sql_parser.table import Table
-from lib.sql_parser.configurations import Configurations
+from sql_parser.table import Table
+from sql_parser.configurations import Configurations
 
 REGEX_PATTERN = re.compile(r"count\((.*)\)")
 

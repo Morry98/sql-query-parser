@@ -1,9 +1,9 @@
 from typing import Tuple
 
-from lib.sql_parser.general_purpose import general_purpose_parser
-from lib.sql_parser.keywords import keyword_parser
-from lib.sql_parser.functions import function_parser
-from lib.sql_parser.configurations import Configurations
+from sql_parser.general_purpose import general_purpose_parser
+from sql_parser.keywords import keyword_parser
+from sql_parser.functions import function_parser
+from sql_parser.configurations import Configurations
 
 
 def compute(
