@@ -1,4 +1,7 @@
 # SQL-PARSER
+
+### ALPHA VERSION
+
 An advanced python sql query pareser
 
 ## Quickstart
