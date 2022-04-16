@@ -1,10 +1,10 @@
 from loguru import logger
 
-from sql_parser import sql_parser
+from sql_query_parser import sql_query_parser
 
 logger.info("START")
 
-query1 = sql_parser.parse_query("""SELECT
+query1 = sql_query_parser.parse_query("""SELECT
     COUNT(v.star) AS aa,
     COUNT(t1.b),
     v.story_id,
@@ -14,7 +14,7 @@ query1 = sql_parser.parse_query("""SELECT
     FROM votes as v, t1
     where v.story_id = :story_id and (v.date > :date or v.role = :role) and t1.test = v.test;
     """)
-# query2 = sql_parser.parse_query("""
+# query2 = sql_query_parser.parse_query("""
 #     SELECT stories.id, stories.author, stories.title, stories.url, stories.vcount
 #     FROM stories
 #     JOIN VoteCount ON VoteCount.story_id = stories.id

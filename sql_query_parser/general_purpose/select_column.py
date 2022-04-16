@@ -1,7 +1,7 @@
 from typing import Tuple, Optional
 
-from sql_parser.configurations import Configurations
-from sql_parser.table import Table
+from sql_query_parser.configurations import Configurations
+from sql_query_parser.table import Table
 
 
 def compute(

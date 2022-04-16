@@ -10,13 +10,14 @@ DESCRIPTION_PATH = ".description"
 VERSION_PATH = ".ver"
 REQUIREMENTS_PATH = "requirements.txt"
 SETUP_COMMAND_WHEN_MISSING = ["install"]
-PACKAGE_NAME = "sql_parser"
-MAINTAINER = "Matteo Morando",
-MAINTAINER_EMAIL = "morandomatteo98@gmail.com",
+PACKAGE_NAME = "sql-query-parser"
+AUTHOR = "Matteo Morando",
+AUTHOR_EMAIL = "morandomatteo98@gmail.com",
 EXCLUDED_PACKAGES = []
 REPOSITORY_URL = "https://github.com/Morry98/sql-parser"
-LICENSE = "LICENSE"
+LICENSE_PATH = "LICENSE"
 DOWNLOAD_URL = ""
+KEYWORDS = ["sql", "parser", "sql-parser", "sql-query-parser"]
 
 # Python supported version checks.
 if sys.version_info[:2] < LOWEST_PYTHON_VERSION_SUPPORTED:
@@ -39,6 +40,17 @@ def read_description():
     except IOError:
         description = ""
     return description.split("\n")
+
+
+# read LICENSE_PATH file
+def read_license():
+    try:
+        with open(os.path.join(current_dir, LICENSE_PATH), "r", encoding="utf-8") as f:
+            license = f.read()
+    except IOError:
+        license = ""
+    return license
+
 
 
 # read first line of .ver file
@@ -82,18 +94,18 @@ def get_docs_url() -> str:
 def setup_package() -> None:
     metadata = dict(
         name=PACKAGE_NAME,
-        maintainer=MAINTAINER,
-        maintainer_email=MAINTAINER_EMAIL,
+        author=AUTHOR,
+        # author_email=AUTHOR_EMAIL,
         description=read_description()[0],
         long_description="\n".join(read_description()),
         url=REPOSITORY_URL,
         download_url=DOWNLOAD_URL.format(PACKAGE_NAME, VERSION),
         project_urls={
             "Bug Tracker": REPOSITORY_URL + "/issues",
-            "Documentation": get_docs_url(),
+            # "Documentation": get_docs_url(),
             "Source Code": REPOSITORY_URL,
         },
-        license_files = (LICENSE,),
+        license=read_license(),
         platforms=["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
         test_suite="pytest",
         version=FULL_VERSION,
@@ -101,6 +113,7 @@ def setup_package() -> None:
         install_requires=read_requirements(),
         packages=find_packages(exclude=EXCLUDED_PACKAGES),
         include_package_data=True,
+        keywords=KEYWORDS
     )
 
     setup(**metadata)

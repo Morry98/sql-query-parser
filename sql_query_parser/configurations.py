@@ -1,9 +1,9 @@
 from typing import List, Optional, Tuple
 
-from sql_parser.exceptions.different_conditions_in_parenthesis_exception import \
+from sql_query_parser.exceptions.different_conditions_in_parenthesis_exception import \
     DifferentConditionsInParenthesisException
-from sql_parser.condition import Condition
-from sql_parser.query import Query
+from sql_query_parser.condition import Condition
+from sql_query_parser.query import Query
 
 
 class Configurations:

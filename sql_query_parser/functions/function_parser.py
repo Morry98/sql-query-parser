@@ -1,8 +1,8 @@
 import os
 from typing import Tuple
 
-from sql_parser import functions
-from sql_parser.configurations import Configurations
+from sql_query_parser import functions
+from sql_query_parser.configurations import Configurations
 
 
 def compute(

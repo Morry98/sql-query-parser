@@ -1,6 +1,6 @@
 from unittest import TestCase
-from sql_parser.configurations import Configurations
-from sql_parser.query import Query
+from sql_query_parser.configurations import Configurations
+from sql_query_parser.query import Query
 
 
 class ConfigurationsTest(TestCase):

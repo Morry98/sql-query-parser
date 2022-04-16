@@ -1,3 +1,0 @@
-from sql_parser.general_purpose import select_column
-from sql_parser.general_purpose import from_table
-from sql_parser.general_purpose import where_condition
