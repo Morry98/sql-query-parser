@@ -2,7 +2,7 @@ colorama==0.4.4
     # via loguru
 cycler==0.11.0
     # via matplotlib
-fonttools==4.31.2
+fonttools==4.32.0
     # via matplotlib
 greenlet==1.1.2
     # via sqlalchemy
@@ -20,7 +20,7 @@ packaging==21.3
     # via matplotlib
 pillow==9.1.0
     # via matplotlib
-pyparsing==3.0.7
+pyparsing==3.0.8
     # via
     #   matplotlib
     #   packaging

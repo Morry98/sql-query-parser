@@ -1,6 +1,6 @@
 from loguru import logger
 
-from lib.sql_parser import sql_parser
+from sql_parser import sql_parser
 
 logger.info("START")
 
