@@ -1,0 +1,5 @@
+global-exclude *_test.py
+global-exclude *_tests.py
+global-include py.typed
+prune venv
+prune *egg*
