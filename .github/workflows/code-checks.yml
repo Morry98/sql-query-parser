@@ -47,5 +47,14 @@ jobs:
     
     - name: Coverage report
       run: coverage report --show-missing --skip-covered --skip-empty --omit="*test*,*exception*"
-
+    
+    - uses: actions/upload-artifact@v3
+      with:
+        name: code-coverage
+        path: htmlcov
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
