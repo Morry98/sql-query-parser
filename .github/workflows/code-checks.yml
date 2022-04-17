@@ -31,11 +31,6 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
     
-
-    - name: Running pytest
-      run: |
-        pytest -v  --cov --cov-report=xml --cov-report=html
-    
     - name: Mypy
       run: python -m mypy sql_query_parser
     
@@ -43,18 +38,30 @@ jobs:
       run: python -m flake8 sql_query_parser
     
     - name: Coverage test
-      run: coverage run --source=sql_query_parser -m pytest
+      run: coverage run --source=sql_query_parser --parallel -m pytest
     
     - name: Coverage report
       run: coverage report --show-missing --skip-covered --skip-empty --omit="*test*,*exception*"
     
-    - uses: actions/upload-artifact@v3
-      with:
-        name: code-coverage
-        path: htmlcov
+    - name: Generate Coverage Report
+      run: coverage xml -o test-coverage.xml
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+    - name: Coveralls
+      uses: AndreMiras/coveralls-python-action@develop
+      with:
+        parallel: true
+        flag-name: Unit Test
+
+  coveralls_finish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: AndreMiras/coveralls-python-action@develop
+      with:
+        parallel-finished: true
