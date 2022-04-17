@@ -4,7 +4,7 @@ import sys
 import warnings
 import re
 
-LOWEST_PYTHON_VERSION_SUPPORTED = (3, 9)
+LOWEST_PYTHON_VERSION_SUPPORTED = (3, 10)
 FIRST_PYTHON_VERSION_NOT_TESTED = (3, 11)
 DESCRIPTION_PATH = ".description"
 VERSION_PATH = ".ver"
