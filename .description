@@ -1,3 +1,6 @@
 An advanced python sql query parser. IS AN ALPHA VERSION
 
-Running on python 3.10
+It takes a sql query and returns a specific data structure with table,
+columns, functions and conditions.
+
+Tested only on python 3.10, it doesn't work with lower versions.
