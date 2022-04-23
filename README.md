@@ -37,5 +37,23 @@ columns, functions and conditions.
 ## Quickstart
 Tested only on python 3.10, it doesn't work with lower versions.
 
+## Usage
+
+```python
+from sql_query_parser.sql_query_parser import parse_query
+
+parsed_query = parse_query("""SELECT
+        COUNT(v.star) AS aa,
+        COUNT(t1.b),
+        v.story_id,
+        t1.test as tt,
+        v.test1,
+        COUNT(t1.ff)
+        FROM votes as v, t1
+        where v.story_id = :story_id and (v.date > :date or v.role = :role) and t1.test = v.test;
+        """)
+print(parsed_query)
+```
+
 ## PYPI page
 https://pypi.org/project/sql-query-parser/
