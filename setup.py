@@ -1,23 +1,25 @@
+from typing import List, Tuple
+
 from setuptools import setup, find_packages
 import os
 import sys
 import warnings
 import re
 
-LOWEST_PYTHON_VERSION_SUPPORTED = (3, 10)
-FIRST_PYTHON_VERSION_NOT_TESTED = (3, 11)
-DESCRIPTION_PATH = ".description"
-VERSION_PATH = ".ver"
-REQUIREMENTS_PATH = "requirements.txt"
-SETUP_COMMAND_WHEN_MISSING = ["install"]
-PACKAGE_NAME = "sql-query-parser"
-AUTHOR = "Matteo Morando",
-AUTHOR_EMAIL = "morandomatteo98@gmail.com",
-EXCLUDED_PACKAGES = []
-REPOSITORY_URL = "https://github.com/Morry98/sql-parser"
-LICENSE_PATH = "LICENSE"
-DOWNLOAD_URL = ""
-KEYWORDS = ["sql", "parser", "sql-parser", "sql-query-parser"]
+LOWEST_PYTHON_VERSION_SUPPORTED: Tuple[int, int] = (3, 10)
+FIRST_PYTHON_VERSION_NOT_TESTED: Tuple[int, int] = (3, 11)
+DESCRIPTION_PATH: str = ".description"
+VERSION_PATH: str = ".ver"
+REQUIREMENTS_PATH: str = "requirements.txt"
+SETUP_COMMAND_WHEN_MISSING: List[str] = ["install"]
+PACKAGE_NAME: str = "sql-query-parser"
+AUTHOR: str = "Matteo Morando"
+AUTHOR_EMAIL: str = "morandomatteo98@gmail.com"
+EXCLUDED_PACKAGES: List[str] = []
+REPOSITORY_URL: str = "https://github.com/Morry98/sql-parser"
+LICENSE_PATH: str = "LICENSE"
+DOWNLOAD_URL: str = ""
+KEYWORDS: List[str] = ["sql", "parser", "sql-parser", "sql-query-parser"]
 
 # Python supported version checks.
 if sys.version_info[:2] < LOWEST_PYTHON_VERSION_SUPPORTED:
@@ -32,8 +34,8 @@ current_dir: str = os.path.realpath(
 )
 
 
-# read first line of .ver file
-def read_description():
+# read first line of DESCRIPTION_PATH file
+def read_description() -> List[str]:
     try:
         with open(os.path.join(current_dir, DESCRIPTION_PATH), "r", encoding="utf-8") as f:
             description = f.read()
@@ -43,18 +45,17 @@ def read_description():
 
 
 # read LICENSE_PATH file
-def read_license():
+def read_license() -> str:
     try:
         with open(os.path.join(current_dir, LICENSE_PATH), "r", encoding="utf-8") as f:
-            license = f.read()
+            license_file = f.read()
     except IOError:
-        license = ""
-    return license
+        license_file = ""
+    return license_file
 
 
-
-# read first line of .ver file
-def read_version():
+# read first line of VERSION_PATH file
+def read_version() -> str:
     try:
         with open(os.path.join(current_dir, VERSION_PATH), "r", encoding="utf-8") as f:
             version = f.read().split("\n")[0]
@@ -63,7 +64,7 @@ def read_version():
     return version
 
 
-def read_requirements():
+def read_requirements() -> List[str]:
     with open(os.path.join(current_dir, REQUIREMENTS_PATH), "r", encoding="utf-8") as f:
         requirements = f.read().split("\n")
     return requirements
@@ -95,7 +96,7 @@ def setup_package() -> None:
     metadata = dict(
         name=PACKAGE_NAME,
         author=AUTHOR,
-        # author_email=AUTHOR_EMAIL,
+        author_email=AUTHOR_EMAIL,
         description=read_description()[0],
         long_description="\n".join(read_description()),
         url=REPOSITORY_URL,
