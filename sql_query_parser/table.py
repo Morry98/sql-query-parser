@@ -19,7 +19,7 @@ class Table:
         return f"Table= {self.__name}\nAlias= {self.__alias}\nColumns= {self.__columns}\n" \
                f"Functions= {self.__functions}\n"
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(str(self))
 
     def __eq__(
