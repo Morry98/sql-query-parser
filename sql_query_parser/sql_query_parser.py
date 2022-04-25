@@ -21,7 +21,7 @@ def parse_query(
     query: Query = config.query
     for table in query.tables:
         table.block_table()
-    for condition in query.condition:
-        condition.block_condition()
+    if query.condition is not None:
+        query.condition.block_condition()
     query.block_query()
     return query
