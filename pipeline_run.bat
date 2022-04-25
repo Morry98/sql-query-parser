@@ -3,10 +3,10 @@ echo "Installing dev dependencies"
 pip install -r requirements-dev.txt
 
 echo "Run linting"
-flake8 sql_query_parser || goto :error
+flake8 sql_query_parser setup.py || goto :error
 
 echo "Run type checking"
-mypy --install-types --non-interactive sql_query_parser || goto :error
+mypy --install-types --non-interactive sql_query_parser setup.py || goto :error
 
 echo "Running tests"
 coverage run --source=sql_query_parser -m pytest || goto :error

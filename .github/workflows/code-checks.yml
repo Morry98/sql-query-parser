@@ -32,10 +32,10 @@ jobs:
         if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
     
     - name: Mypy
-      run: python -m mypy sql_query_parser
+      run: python -m mypy sql_query_parser setup.py
     
     - name: Flake8
-      run: python -m flake8 sql_query_parser
+      run: python -m flake8 sql_query_parser setup.py
     
     - name: Coverage test
       run: coverage run --source=sql_query_parser -m pytest
