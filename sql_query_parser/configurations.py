@@ -20,16 +20,44 @@ class Configurations:
         self.__condition_position: int = 0
         self.__is_new_condition: bool = True
 
+    def __repr__(self) -> str:
+        return f"Configurations: \n" \
+               f"Query: {self.__query}\n" \
+               f"Keyword: {self.__keyword}\n" \
+               f"Parsing value: {self.__parsing_value}\n" \
+               f"Conditions type: {self.__conditions_type}\n" \
+               f"Conditions: {self.__conditions}\n" \
+               f"Condition position: {self.__condition_position}\n" \
+               f"Is new condition: {self.__is_new_condition}"
+
+    def __hash__(self) -> int:
+        return hash(str(self))
+
     def __eq__(
             self,
             other: object
     ) -> bool:
-        if not isinstance(other, Configurations):
-            raise TypeError("Configurations can only be compared to other Configurations")
-        return self.__query == other.query and self.__keyword == other.__keyword and \
-            self.__parsing_value == other.__parsing_value and \
-            self.__condition_position == other.__condition_position and self.__conditions == other.__conditions and \
-            self.__conditions_type == other.__conditions_type and self.__is_new_condition == other.__is_new_condition
+        if isinstance(other, Configurations):
+            return (
+                    self.__query == other.query and
+                    self.__keyword == other.__keyword and
+                    self.__parsing_value == other.__parsing_value and
+                    self.__condition_position == other.__condition_position and
+                    self.__conditions == other.__conditions and
+                    self.__conditions_type == other.__conditions_type and
+                    self.__is_new_condition == other.__is_new_condition
+            )
+        return False
+
+    def copy(self) -> 'Configurations':
+        configurations = Configurations(self.__query)
+        configurations.__keyword = self.__keyword.copy()
+        configurations.__parsing_value = self.__parsing_value.copy()
+        configurations.__conditions_type = self.__conditions_type.copy()
+        configurations.__conditions = self.__conditions.copy()
+        configurations.__condition_position = self.__condition_position
+        configurations.__is_new_condition = self.__is_new_condition
+        return configurations
 
     @property
     def keywords(self) -> List[str]:
@@ -112,9 +140,10 @@ class Configurations:
 
     def pop_last_keyword(self) -> str:
         if len(self.__keyword) == 0 or self.__keyword is None:
-            raise Exception("No Keyword to pop")
+            raise IndexError("Keyword is empty")
         return self.__keyword.pop(-1)
 
+    # TODO Tested until here
     def create_new_condition(self) -> None:
         self.__conditions.append([])
         self.__conditions_type.append([])
