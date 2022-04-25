@@ -7,13 +7,6 @@ from sql_query_parser.table import Table
 
 class Query:
 
-    def __repr__(self) -> str:
-        string: str = "Tables:\n"
-        for t in self.__tables:
-            string += f"{t}\n"
-        string += f"Condition: \n{self.__condition}"
-        return string
-
     def __init__(
             self,
             text: str
@@ -22,32 +15,58 @@ class Query:
         self.__tables: List[Table] = []
         self.__tables_by_alias: Dict[str, int] = {}
         self.__tables_by_name: Dict[str, int] = {}
-        self.__condition: List[Condition] = []
+        self.__condition: Optional[Condition] = None
         self.__blocked: bool = False
+
+    def __repr__(self) -> str:
+        string: str = "Tables:\n"
+        for t in self.__tables:
+            string += f"{t}\n"
+        if self.__condition is not None:
+            string += f"Condition:\n{self.__condition}\n"
+        return string
+
+    def __hash__(self) -> int:
+        return hash(str(self))
 
     def __eq__(
             self,
             other: object
     ) -> bool:
-        if not isinstance(other, Query):
-            return NotImplemented
-        if self.__text != other.__text:
-            return False
-        if self.__tables != other.__tables:
-            return False
-        if self.__tables_by_alias != other.__tables_by_alias:
-            return False
-        if self.__tables_by_name != other.__tables_by_name:
-            return False
-        if self.__condition != other.__condition:
-            return False
-        if self.__blocked != other.__blocked:
-            return False
-        return True
+        if isinstance(other, Query):
+            return (
+                self.__text == other.__text and
+                self.__tables == other.__tables and
+                self.__tables_by_alias == other.__tables_by_alias and
+                self.__tables_by_name == other.__tables_by_name and
+                self.__condition == other.__condition and
+                self.__blocked == other.__blocked
+            )
+        return False
+
+    def copy(self) -> "Query":
+        q: Query = Query(self.__text)
+        q.__tables = self.__tables.copy()
+        q.__tables_by_alias = self.__tables_by_alias.copy()
+        q.__tables_by_name = self.__tables_by_name.copy()
+        if self.__condition is not None:
+            q.__condition = self.__condition.copy()
+        q.__blocked = self.__blocked
+        return q
 
     @property
     def blocked(self) -> bool:
         return self.__blocked
+
+    @blocked.setter
+    def blocked(
+            self,
+            blocked: bool
+    ) -> None:
+        if not self.__blocked:
+            self.__blocked = blocked
+        else:
+            raise ObjectBlockedException(object_type="Table", object_name="Query")
 
     @property
     def text(self) -> str:
@@ -85,13 +104,15 @@ class Query:
         return None
 
     @property
-    def condition(self) -> List[Condition]:
+    def condition(self) -> Optional[Condition]:
+        if self.__condition is None:
+            return self.__condition
         return self.__condition.copy()
 
     @condition.setter
     def condition(
             self,
-            condition: List[Condition]
+            condition: Condition
     ) -> None:
         if not self.__blocked:
             self.__condition = condition.copy()
@@ -99,7 +120,7 @@ class Query:
             raise ObjectBlockedException(object_type="Query")
 
     def block_query(self) -> None:
-        self.__blocked = False
+        self.__blocked = True
 
     def add_table(
             self,
@@ -114,9 +135,18 @@ class Query:
 
     def add_condition(
             self,
-            condition: Condition
+            condition: Condition,
+            condition_type: Optional[str] = None
     ) -> None:
         if not self.__blocked:
-            self.__condition.append(condition)
+            if self.__condition is None and condition_type is not None:
+                self.__condition = Condition(condition_type=condition_type)
+            elif self.__condition is not None and \
+                    condition_type is not None and \
+                    self.__condition.condition_type != condition_type:
+                raise ValueError("Condition type is not consistent")
+            if self.__condition is None:
+                raise ValueError("Query Condition is None")
+            self.__condition.add_condition(condition)
         else:
             raise ObjectBlockedException(object_type="Query")
