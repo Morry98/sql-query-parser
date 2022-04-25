@@ -215,6 +215,7 @@ class QueryTest(TestCase):
         query_copy = self.query_text_a_1.copy()
         self.assertEqual(query_copy, self.query_text_a_1)
         query_copy.tables = [Table(alias="alias1"), Table(alias="alias2")]
+        self.assertNotEqual(query_copy, self.query_text_a_1)
         query_copy.condition = Condition(condition_type="or")
         self.assertNotEqual(query_copy, self.query_text_a_1)
 

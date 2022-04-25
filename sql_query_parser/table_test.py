@@ -256,8 +256,10 @@ class TableTest(TestCase):
         self.assertEqual(self.table_alias_a_1, table_alias_a_1_copy)
 
         table_alias_a_1_copy.alias = "alias2"
+        self.assertNotEqual(self.table_alias_a_1, table_alias_a_1_copy)
         table_alias_a_1_copy.name = "name2"
+        self.assertNotEqual(self.table_alias_a_1, table_alias_a_1_copy)
         table_alias_a_1_copy.columns = {"col2": "alias1"}
+        self.assertNotEqual(self.table_alias_a_1, table_alias_a_1_copy)
         table_alias_a_1_copy.functions = {"fun2": "alias1"}
-
         self.assertNotEqual(self.table_alias_a_1, table_alias_a_1_copy)
