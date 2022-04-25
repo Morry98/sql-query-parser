@@ -25,8 +25,7 @@ class TableTest(TestCase):
         """
         Test __eq__ function if the object is not a Table
         """
-        with self.assertRaises(TypeError):
-            _ = self.table_alias_a_1 == 1
+        self.assertFalse(self.table_alias_a_1 == 1)
 
     def test_eq_alais(self):
         """

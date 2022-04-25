@@ -5,10 +5,6 @@ from sql_query_parser.exceptions.object_blocked_exception import ObjectBlockedEx
 
 class Table:
 
-    def __repr__(self) -> str:
-        return f"Table= {self.__name}\nAlias= {self.__alias}\nColumns= {self.__columns}\n" \
-               f"Functions= {self.__functions}\n"
-
     def __init__(
             self,
             alias: str
@@ -19,14 +15,41 @@ class Table:
         self.__functions: Dict[str, str] = {}
         self.__blocked: bool = False
 
+    def __repr__(self) -> str:
+        return f"Table= {self.__name}\nAlias= {self.__alias}\nColumns= {self.__columns}\n" \
+               f"Functions= {self.__functions}\n"
+
+    def __hash__(self):
+        return hash(str(self))
+
     def __eq__(
             self,
             other: object
     ) -> bool:
-        if not isinstance(other, Table):
-            raise TypeError("Can't compare Table with other type")
-        return self.__name == other.__name and self.__alias == other.__alias and self.__columns == other.__columns and \
-            self.__functions == other.__functions and self.__blocked == other.__blocked
+        if isinstance(other, Table):
+            return (
+                self.__name == other.__name and
+                self.__alias == other.__alias and
+                self.__columns == other.__columns and
+                self.__functions == other.__functions and
+                self.__blocked == other.__blocked
+            )
+        return False
+
+    def copy(self) -> 'Table':
+        """
+        Copy table
+
+        Returns: Table
+        """
+        table = Table(
+            alias=self.__alias
+        )
+        table.__name = self.__name
+        table.__columns = self.__columns.copy()
+        table.__functions = self.__functions.copy()
+        table.__blocked = self.__blocked
+        return table
 
     @property
     def blocked(self) -> bool:
