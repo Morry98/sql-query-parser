@@ -233,3 +233,31 @@ class TableTest(TestCase):
         """
         with self.assertRaises(ObjectBlockedException):
             self.blocked_table.add_function(function="fun1")
+
+    def test_hash(self):
+        """
+        Test hash function
+        """
+        self.assertEqual(hash(self.table_alias_a_1), hash(self.table_alias_a_2))
+        self.table_alias_a_2.name = "name2"
+        self.assertNotEqual(hash(self.table_alias_a_1), hash(self.table_alias_a_2))
+
+    def test_copy(self):
+        """
+        Test copy function
+        """
+
+        self.table_alias_a_1.name = "name1"
+        self.table_alias_a_1.columns = {"col1": "alias1"}
+        self.table_alias_a_1.functions = {"fun1": "alias1"}
+
+        table_alias_a_1_copy = self.table_alias_a_1.copy()
+
+        self.assertEqual(self.table_alias_a_1, table_alias_a_1_copy)
+
+        table_alias_a_1_copy.alias = "alias2"
+        table_alias_a_1_copy.name = "name2"
+        table_alias_a_1_copy.columns = {"col2": "alias1"}
+        table_alias_a_1_copy.functions = {"fun2": "alias1"}
+
+        self.assertNotEqual(self.table_alias_a_1, table_alias_a_1_copy)
